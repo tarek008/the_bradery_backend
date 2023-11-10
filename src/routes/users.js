@@ -3,8 +3,6 @@ const router = new express.Router();
 const User = require("../controllers/user");
 const auth = require("../middleware/auth");
 
-router.post("/createUser", User.createUser);
-
 router.post("/authenticate", User.Authenticate);
 
 router.post("/logout", auth, User.logout);

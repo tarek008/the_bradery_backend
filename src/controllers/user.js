@@ -4,45 +4,6 @@ const bcrypt = require("bcryptjs");
 const { sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 
-exports.createUser = async (req, res) => {
-  try {
-    const [users] = await sequelize.query(
-      `SELECT * FROM users WHERE email = :email`,
-      {
-        replacements: { email: req.body.email },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
-    if (users > 0) {
-      return res.status(409).send({ error: "User is already registered" });
-    }
-    const hashedPassword = await bcrypt.hash(req.body.password, 8);
-    const insertQuery = `INSERT INTO users (username, email, password) VALUES (:name, :email, :password)`;
-    const result = await sequelize.query(insertQuery, {
-      replacements: {
-        name: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
-      },
-    });
-
-    const newUserId = result[0];
-
-    const token = await generateAuthToken(
-      { id: newUserId, email: req.body.email },
-      true
-    );
-    res
-      .header("x-auth-token", token)
-      .header("access-control-expose-headers", "x-auth-token")
-      .status(201)
-      .send({ token });
-  } catch (e) {
-    console.error(e);
-    res.status(500).send();
-  }
-};
-
 const generateAuthToken = async ({ id, email }, saveToken = false) => {
   const token = jwt.sign({ id, email }, process.env.PRIVATEKEY, {
     expiresIn: "24h",
@@ -128,7 +89,6 @@ exports.logout = async (req, res) => {
     res.status(500).send({ error: "Failed to log out" });
   }
 };
-
 
 exports.getConnectedUser = async (req, res) => {
   try {
