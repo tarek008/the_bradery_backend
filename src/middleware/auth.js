@@ -9,12 +9,13 @@ const auth = async (req, res, next) => {
     }
     const token = tokenHeader.replace("Bearer ", "");
     const decoded = jwt.verify(token, process.env.PRIVATEKEY);
+    console.log(token);
 
     // Execute a raw SQL query to find the user by ID and verify the token exists
     const [results] = await sequelize.query(
-      `SELECT u.*, t.token FROM users u INNER JOIN tokens t ON u.user_id = t.id WHERE (u.user_id = :userId)`,
+      `SELECT u.*, t.token FROM users u INNER JOIN tokens t ON u.user_id = t.user_id WHERE (t.token = :token AND u.user_id = :userId)`,
       {
-        replacements: { userId: decoded.id },
+        replacements: { token: token, userId: decoded.id },
         type: sequelize.QueryTypes.SELECT,
       }
     );

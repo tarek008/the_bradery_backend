@@ -8,10 +8,9 @@ const generateAuthToken = async ({ id, email }, saveToken = false) => {
   const token = jwt.sign({ id, email }, process.env.PRIVATEKEY, {
     expiresIn: "24h",
   });
-
   if (saveToken) {
     await sequelize.query(
-      `INSERT INTO tokens (id, token) VALUES (:userId, :token)`,
+      `INSERT INTO tokens (user_id, token, createdAt, updatedAt) VALUES (:userId, :token, NOW(), NOW())`,
       {
         replacements: {
           userId: id,
@@ -70,31 +69,20 @@ exports.Authenticate = async (req, res) => {
 
 exports.logout = async (req, res) => {
   const transaction = await sequelize.transaction();
-
   try {
     await sequelize.query(
-      "DELETE FROM tokens WHERE id = :userId AND token = :token",
+      "DELETE FROM tokens WHERE user_id = :userId AND token = :token",
       {
         replacements: { userId: req.body.user_id, token: req.token },
         transaction,
       }
     );
-    await transaction.commit();
 
+    await transaction.commit();
     res.status(200).send({ message: "Logged out successfully" });
   } catch (error) {
-    // Rollback the transaction in case of an error
     await transaction.rollback();
-
     res.status(500).send({ error: "Failed to log out" });
-  }
-};
-
-exports.getConnectedUser = async (req, res) => {
-  try {
-    res.status(200).send({ email: req.user.email, name: req.user.name });
-  } catch (e) {
-    res.status(500).send();
   }
 };
 
