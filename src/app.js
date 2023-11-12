@@ -40,5 +40,7 @@ app.use("/products", productsRouter);
 app.use("/commandes", commandesRouter);
 
 // Start the server
-const port = 4000;
-app.listen(port, () => console.log(`Listening to port ${port}`));
+//const port = 4000;
+//app.listen(port, () => console.log(`Listening to port ${port}`));
+
+module.exports = app;

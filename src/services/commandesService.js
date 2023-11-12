@@ -107,7 +107,7 @@ const createCheckoutSession = async (req, res) => {
   }
 };
 
-const getCommandes = async (userId) =>{
+const getCommandes = async (userId) => {
   try {
     const results = await sequelize.query(
       `
@@ -156,11 +156,12 @@ const getCommandes = async (userId) =>{
     });
   } catch (error) {
     console.error("Error fetching commandes:", error);
-    throw error; 
+    throw error;
   }
 };
 
 module.exports = {
+  createOrder,
   passerCommande,
   createCheckoutSession,
   getCommandes,

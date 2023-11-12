@@ -2,11 +2,11 @@
   "name": "the_bradery_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "StartServer.js",
   "scripts": {
-    "start": "node ./src/app.js",
-    "dev": "nodemon ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./src/StartServer.js",
+    "dev": "nodemon ./src/StartServer.js",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +22,9 @@
     "nodemon": "^3.0.1",
     "sequelize": "^6.34.0",
     "stripe": "^14.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   }
 }
